@@ -1,12 +1,16 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
-using VMD.RESTApiResponseWrapper.Net.Extensions;
 using VMD.RESTApiResponseWrapper.Net.Enums;
-using System;
+using VMD.RESTApiResponseWrapper.Net.Extensions;
+using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RESTApiResponseWrapper.Net
 {
@@ -25,75 +29,91 @@ namespace VMD.RESTApiResponseWrapper.Net
             }
         }
 
-        private static HttpResponseMessage BuildApiResponse(HttpRequestMessage request, HttpResponseMessage response)
+        private static  HttpResponseMessage BuildApiResponse(HttpRequestMessage request, HttpResponseMessage response)
         {
-  
-            dynamic content = null;
             object data = null;
-            string errorMessage = null;
-            ApiError apiError = null;
-            
             var code = (int)response.StatusCode;
 
-            if (response.TryGetContentValue(out content) && !response.IsSuccessStatusCode)
+            // Check if there is content to read from the response body.
+            if (response.Content?.Headers.ContentLength > 0)
             {
-                HttpError error = content as HttpError;
+                var contentString = response.Content.ReadAsStringAsync().Result;
 
-                //handle exception
-                if (error != null)
+                if (!response.IsSuccessStatusCode)
                 {
-                    content = null;
+                    ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(contentString);
 
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                        apiError = new ApiError("The specified URI does not exist. Please verify and try again.");
-                    else if (response.StatusCode == HttpStatusCode.NoContent)
-                        apiError = new ApiError("The specified URI does not contain any content.");
+                    if (problem != null)
+                    {
+                        ApiError apiError;
+                        switch (response.StatusCode)
+                        {
+                            case HttpStatusCode.NotFound:
+                                apiError = new ApiError("The specified URI does not exist. Please verify and try again.");
+                                break;
+                            case HttpStatusCode.NoContent:
+                                apiError = new ApiError("The specified URI does not contain any content.");
+                                break;
+                            default:
+                                string errorMessage = problem.Detail ?? "An unspecified error occurred.";
+
+#if DEBUG                       
+                                var problemJObject = JObject.Parse(contentString);
+                                var exMessage = problemJObject["exceptionMessage"]?.ToString();
+                                var stackTrace = problemJObject["stackTrace"]?.ToString();
+
+                                errorMessage = $"{errorMessage}{exMessage?.ToString()}{stackTrace?.ToString()}";
+#endif
+                                apiError = new ApiError(errorMessage);
+                                break;
+                        }
+                        data = new APIResponse(code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
+                    }
                     else
                     {
-                        errorMessage = error.Message;
-
-#if DEBUG
-                            errorMessage = string.Concat(errorMessage, error.ExceptionMessage, error.StackTrace);
-#endif
-
-                        apiError = new ApiError(errorMessage);
+                        data = response.Content.ReadAsStringAsync().Result;
                     }
-
-                    data = new APIResponse((int)code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
-
                 }
                 else
-                    data = content;
+                {
+                    var contentStream = response.Content.ReadAsStringAsync().Result;
+                    try
+                    {
+                        var apiResponse = JsonConvert.DeserializeObject<APIResponse>(contentStream);
+
+                        if (apiResponse != null)
+                        {
+                            response.StatusCode = (HttpStatusCode)apiResponse.StatusCode;
+                            data = apiResponse;
+                        }
+                    }
+                    catch (JsonException)
+                    {
+                        var reader = new StreamReader(contentStream);
+                        var rawContent = reader.ReadToEndAsync().Result;
+                        data = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), rawContent);
+                    }
+                }
             }
             else
             {
-                if (response.TryGetContentValue(out content))
+                if (response.IsSuccessStatusCode)
                 {
-                    Type type;
-                    type = content?.GetType();
-
-                    if (type.Name.Equals("APIResponse"))
-                    {
-                        response.StatusCode = Enum.Parse(typeof(HttpStatusCode), content.StatusCode.ToString());
-                        data = content;
-                    }
-                    else if (type.Name.Equals("SwaggerDocument"))
-                        data = content;
-                    else
-                        data = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), content);
-                }
-                else
-                {
-                    if (response.IsSuccessStatusCode)
-                        data = new APIResponse((int)response.StatusCode, ResponseMessageEnum.Success.GetDescription());
+                    data = new APIResponse((int)response.StatusCode, ResponseMessageEnum.Success.GetDescription());
                 }
             }
 
-            var newResponse = request.CreateResponse(response.StatusCode, data);        
+            // Create a new response containing the processed 'data' object.
+            var newResponse = new HttpResponseMessage(response.StatusCode);
+            if (data != null)
+            {
+                var jsonPayload = JsonConvert.SerializeObject(data);
+                newResponse.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            }
 
             foreach (var header in response.Headers)
             {
-                newResponse.Headers.Add(header.Key, header.Value);
+                newResponse.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
             return newResponse;

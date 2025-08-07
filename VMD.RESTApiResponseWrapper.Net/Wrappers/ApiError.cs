@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http.ModelBinding;
 
 namespace VMD.RESTApiResponseWrapper.Net.Wrappers
 {

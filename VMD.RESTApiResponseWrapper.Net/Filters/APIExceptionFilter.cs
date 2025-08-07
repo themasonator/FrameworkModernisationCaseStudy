@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Net;
-using System.Net.Http;
-using System.Web.Http.Filters;
 using VMD.RESTApiResponseWrapper.Net.Enums;
 using VMD.RESTApiResponseWrapper.Net.Extensions;
 using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RESTApiResponseWrapper.Net.Filters
 {
-    public class ApiExceptionFilter : ExceptionFilterAttribute
+    public class ApiExceptionFilter : IExceptionFilter
     {
-        public override void OnException(HttpActionExecutedContext context)
+        public void OnException(ExceptionContext context)
         {
             ApiError apiError = null;
             APIResponse apiResponse = null;
@@ -25,7 +25,6 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
                 apiError.ReferenceErrorCode = ex.ReferenceErrorCode;
                 apiError.ReferenceDocumentLink = ex.ReferenceDocumentLink;
                 code = ex.StatusCode;
-                
             }
             else if (context.Exception is UnauthorizedAccessException)
             {
@@ -37,8 +36,8 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
             {
                 // Unhandled errors
 #if !DEBUG
-                    var msg = "An unhandled error occurred.";                
-                    string stack = null;
+                var msg = "An unhandled error occurred.";
+                string stack = null;
 #else
                 var msg = context.Exception.GetBaseException().Message;
                 string stack = context.Exception.StackTrace;
@@ -47,19 +46,20 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
                 apiError = new ApiError(msg);
                 apiError.Details = stack;
                 code = (int)HttpStatusCode.InternalServerError;
-               
+
 
                 // handle logging here
             }
 
             apiResponse = new APIResponse(code, ResponseMessageEnum.Exception.GetDescription(), null, apiError);
 
-            // always return a JSON result
-            HttpStatusCode  c = (HttpStatusCode)code;
+            context.Result = new ObjectResult(apiResponse)
+            {
+                StatusCode = code
+            };
 
-            context.Response = context.Request.CreateResponse(c, apiResponse);
-
-            //base.OnException(context);
+            // Mark the exception as handled
+            context.ExceptionHandled = true;
         }
     }
 }
