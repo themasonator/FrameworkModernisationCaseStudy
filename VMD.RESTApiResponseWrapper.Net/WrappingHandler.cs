@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using VMD.RESTApiResponseWrapper.Net.Enums;
@@ -40,7 +40,7 @@ namespace VMD.RESTApiResponseWrapper.Net
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(contentString);
+                    ProblemDetails problem = JsonSerializer.Deserialize<ProblemDetails>(contentString);
 
                     if (problem != null)
                     {
@@ -57,7 +57,7 @@ namespace VMD.RESTApiResponseWrapper.Net
                                 string errorMessage = problem.Detail ?? "An unspecified error occurred.";
 
 #if DEBUG                       
-                                var problemJObject = JObject.Parse(contentString);
+                                var problemJObject = JsonSerializer.Deserialize<Dictionary<string, object>>(contentString);
                                 var exMessage = problemJObject["exceptionMessage"]?.ToString();
                                 var stackTrace = problemJObject["stackTrace"]?.ToString();
 
@@ -78,7 +78,7 @@ namespace VMD.RESTApiResponseWrapper.Net
                     var contentStream = await response.Content.ReadAsStringAsync();
                     try
                     {
-                        var apiResponse = JsonConvert.DeserializeObject<APIResponse>(contentStream);
+                        var apiResponse = JsonSerializer.Deserialize<APIResponse>(contentStream);
 
                         if (apiResponse != null)
                         {
@@ -106,7 +106,7 @@ namespace VMD.RESTApiResponseWrapper.Net
             var newResponse = new HttpResponseMessage(response.StatusCode);
             if (data != null)
             {
-                var jsonPayload = JsonConvert.SerializeObject(data);
+                var jsonPayload = JsonSerializer.Serialize(data);
                 newResponse.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             }
 

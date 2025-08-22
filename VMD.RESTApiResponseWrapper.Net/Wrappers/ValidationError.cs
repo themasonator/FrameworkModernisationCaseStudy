@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿
+
+using System.Text.Json.Serialization;
 
 namespace VMD.RESTApiResponseWrapper.Net.Wrappers
 {
     public class ValidationError
     {
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Field { get; }
 
         public string Message { get; }

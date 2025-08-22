@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RESTApiResponseWrapper.Net.Extensions
