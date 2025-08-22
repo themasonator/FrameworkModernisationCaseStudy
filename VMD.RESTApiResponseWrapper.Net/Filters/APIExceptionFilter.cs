@@ -8,9 +8,9 @@ using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RESTApiResponseWrapper.Net.Filters
 {
-    public class ApiExceptionFilter : IExceptionFilter
+    public class ApiExceptionFilter : ExceptionFilterAttribute
     {
-        public void OnException(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
         {
             ApiError apiError = null;
             APIResponse apiResponse = null;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -25,11 +24,11 @@ namespace VMD.RESTApiResponseWrapper.Net
             else
             {
                 var response = await base.SendAsync(request, cancellationToken);
-                return BuildApiResponse(request, response);
+                return await BuildApiResponseAsync(request, response);
             }
         }
 
-        private static  HttpResponseMessage BuildApiResponse(HttpRequestMessage request, HttpResponseMessage response)
+        private async static Task<HttpResponseMessage> BuildApiResponseAsync(HttpRequestMessage request, HttpResponseMessage response)
         {
             object data = null;
             var code = (int)response.StatusCode;
@@ -37,7 +36,7 @@ namespace VMD.RESTApiResponseWrapper.Net
             // Check if there is content to read from the response body.
             if (response.Content?.Headers.ContentLength > 0)
             {
-                var contentString = response.Content.ReadAsStringAsync().Result;
+                var contentString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -71,12 +70,12 @@ namespace VMD.RESTApiResponseWrapper.Net
                     }
                     else
                     {
-                        data = response.Content.ReadAsStringAsync().Result;
+                        data = await response.Content.ReadAsStringAsync();
                     }
                 }
                 else
                 {
-                    var contentStream = response.Content.ReadAsStringAsync().Result;
+                    var contentStream = await response.Content.ReadAsStringAsync();
                     try
                     {
                         var apiResponse = JsonConvert.DeserializeObject<APIResponse>(contentStream);
@@ -90,7 +89,7 @@ namespace VMD.RESTApiResponseWrapper.Net
                     catch (JsonException)
                     {
                         var reader = new StreamReader(contentStream);
-                        var rawContent = reader.ReadToEndAsync().Result;
+                        var rawContent = await reader.ReadToEndAsync();
                         data = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), rawContent);
                     }
                 }
