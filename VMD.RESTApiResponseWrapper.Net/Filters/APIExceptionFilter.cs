@@ -14,7 +14,7 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
         {
             ApiError apiError = null;
             APIResponse apiResponse = null;
-            int code = 0;
+            int code;
 
             if (context.Exception is ApiException)
             {
@@ -30,7 +30,6 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
             {
                 apiError = new ApiError("Unauthorized Access");
                 code = (int)HttpStatusCode.Unauthorized;
-                // handle logging here
             }
             else
             {
