@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36401.2 d17.14
+VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMD.RESTApiResponseWrapper.Net", "VMD.RESTApiResponseWrapper.Net\VMD.RESTApiResponseWrapper.Net.csproj", "{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMD.RestApiResponseWrapper.Test", "VMD.RestApiResponseWrapper.Test\VMD.RestApiResponseWrapper.Test.csproj", "{3D387D9C-283B-4CD6-B420-19FD265AA856}"
+	ProjectSection(ProjectDependencies) = postProject
+		{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2} = {026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D387D9C-283B-4CD6-B420-19FD265AA856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D387D9C-283B-4CD6-B420-19FD265AA856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D387D9C-283B-4CD6-B420-19FD265AA856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D387D9C-283B-4CD6-B420-19FD265AA856}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
