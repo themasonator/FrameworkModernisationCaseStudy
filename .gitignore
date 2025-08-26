@@ -421,3 +421,4 @@ typings/
 
 
 # End of https://www.gitignore.io/api/aspnetcore,visualstudio
+/NewReport3.upgrade.json
