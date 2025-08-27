@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMD.RESTApiResponseWrapper.Net", "VMD.RESTApiResponseWrapper.Net\VMD.RESTApiResponseWrapper.Net.csproj", "{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMD.RestApiResponseWrapper.Test", "VMD.RestApiResponseWrapper.Test\VMD.RestApiResponseWrapper.Test.csproj", "{3D387D9C-283B-4CD6-B420-19FD265AA856}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMD.RESTApiResponseWrapper.Net.Test", "VMD.RestApiResponseWrapper.Test\VMD.RESTApiResponseWrapper.Net.Test.csproj", "{3D387D9C-283B-4CD6-B420-19FD265AA856}"
 	ProjectSection(ProjectDependencies) = postProject
 		{026E47EA-BC6C-45A0-BC07-105DB6FEB7E2} = {026E47EA-BC6C-45A0-BC07-105DB6FEB7E2}
 	EndProjectSection
