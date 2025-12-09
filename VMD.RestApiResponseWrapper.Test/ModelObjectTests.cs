@@ -1,12 +1,9 @@
-﻿using System.Web.Http.Controllers;
-using VMD.RestApiResponseWrapper.Net;
-using VMD.RESTApiResponseWrapper.Net.Filters;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
+﻿using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RestApiResponseWrapper.Net.Test
 {
     [TestClass]
-    public sealed class FullCoverageTestSuite
+    public sealed class ModelObjectTests
     {
         [TestMethod]
         public void ApiResponse_Should_Create_SuccessResponse()
@@ -35,6 +32,14 @@ namespace VMD.RestApiResponseWrapper.Net.Test
             CollectionAssert.AreEqual(errors, (List<ValidationError>)ex.Errors);
             Assert.AreEqual("ERR001", ex.ReferenceErrorCode);
             Assert.AreEqual("https://docs.link", ex.ReferenceDocumentLink);
+        }
+
+        [TestMethod]
+        public void ApiError_Should_Set_Properties_Correctly()
+        {
+            var apiError = new ApiError("Custom error");
+            Assert.IsTrue(apiError.IsError);
+            Assert.AreEqual("Custom error", apiError.ExceptionMessage);
         }
     }
 }
