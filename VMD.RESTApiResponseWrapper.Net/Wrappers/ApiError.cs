@@ -19,6 +19,8 @@ namespace VMD.RESTApiResponseWrapper.Net.Wrappers
             this.IsError = true;
         }
 
+        public ApiError() { }
+
         public ApiError(ModelStateDictionary modelState)
         {
             this.IsError = true;

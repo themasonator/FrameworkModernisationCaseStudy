@@ -21,6 +21,8 @@ namespace VMD.RESTApiResponseWrapper.Net.Wrappers
         [DataMember(EmitDefaultValue = false)]
         public object Result { get; set; }
 
+        public APIResponse() { }
+
         public APIResponse(int statusCode, string message = "", object result = null, ApiError apiError = null, string apiVersion = "1.0.0.0")
         {
             this.StatusCode = statusCode;
