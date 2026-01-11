@@ -41,5 +41,13 @@ namespace VMD.RestApiResponseWrapper.Net.Test
             Assert.IsTrue(apiError.IsError);
             Assert.AreEqual("Custom error", apiError.ExceptionMessage);
         }
+
+        [TestMethod]
+        public void ValidationError_Should_Set_Properties_Correctly()
+        {
+            var validationError = new ValidationError("field", "Custom message");
+            Assert.AreEqual("field", validationError.Field);
+            Assert.AreEqual("Custom message", validationError.Message);
+        }
     }
 }
