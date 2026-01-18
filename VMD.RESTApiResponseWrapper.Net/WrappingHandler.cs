@@ -93,7 +93,10 @@ namespace VMD.RESTApiResponseWrapper.Net
             {
                 RequestMessage = request,
                 Content = data != null
-                    ? new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+                    ? new StringContent(
+                        JsonConvert.SerializeObject(data), 
+                        Encoding.UTF8, 
+                        "application/json")
                     : null
             };
 

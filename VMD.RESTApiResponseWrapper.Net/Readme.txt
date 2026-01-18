@@ -1,6 +1,6 @@
 # VMD.RESTApiResponseWrapper.Net
 
-The VMD.RESTApiResponseWrapper.Net is a global exception handler and response wrapper for ASP.NET Web APIs. It uses a ExceptionFilterAttribute to capture exceptions and uses a DelegatingHandler to capture HTTP response to build a consistent response object for both successful and error requests.
+The VMD.RESTApiResponseWrapper.Net is a global exception handler and response wrapper for ASP.NET core Web APIs. It uses a ExceptionFilterAttribute to capture exceptions and uses a DelegatingHandler to capture HTTP response to build a consistent response object for both successful and error requests.
 
 ## Prerequisite
 
@@ -182,7 +182,8 @@ The source code for this can be found at: (https://github.com/proudmonkey/RESTAp
 
 ## Author
 
-* **Vincent Maverick Durano** - [Blog](http://vmsdurano.com/)
+* **Harry Mason** - 
+* **Vincent Maverick Durano**
 
 
 ## License
