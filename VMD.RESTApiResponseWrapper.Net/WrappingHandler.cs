@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using VMD.RESTApiResponseWrapper.Net.Enums;
@@ -26,11 +22,11 @@ namespace VMD.RESTApiResponseWrapper.Net
             else
             {
                 var response = await base.SendAsync(request, cancellationToken);
-                return await BuildApiResponseAsync(request, response);
+                return BuildApiResponse(request, response);
             }
         }
 
-        private async static Task<HttpResponseMessage> BuildApiResponseAsync(HttpRequestMessage request, HttpResponseMessage response)
+        private static HttpResponseMessage BuildApiResponse(HttpRequestMessage request, HttpResponseMessage response)
         {
             dynamic content = null;
             object data = null;
