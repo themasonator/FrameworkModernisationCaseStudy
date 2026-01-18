@@ -1,8 +1,10 @@
 using Moq;
 using Moq.Protected;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Web.Http;
 using VMD.RESTApiResponseWrapper.Net.Wrappers;
 
 namespace VMD.RESTApiResponseWrapper.Net.Test;
@@ -15,12 +17,14 @@ public class PathTests
     {
         var mockHttpMessageHandler = GetWorkingMockHttpMessageHandler();
         var wrappingHandler = new WrappingHandler
-            {InnerHandler = mockHttpMessageHandler.Object};
+        { InnerHandler = mockHttpMessageHandler.Object };
         var client = new HttpClient(wrappingHandler);
-        var response = await client.GetAsync("http://localhost/api/test");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/test");
+        request.SetConfiguration(new HttpConfiguration());
+        var response = await client.SendAsync(request);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObject = JsonSerializer.Deserialize<APIResponse>(responseString);
+        var responseObject = System.Text.Json.JsonSerializer.Deserialize<APIResponse>(responseString);
         Assert.IsNotNull(responseObject);
         Assert.AreEqual(200, responseObject.StatusCode);
         Assert.AreEqual("Test Pass", responseObject.Message);
@@ -33,19 +37,20 @@ public class PathTests
         var wrappingHandler = new WrappingHandler
         { InnerHandler = mockHttpMessageHandler.Object };
         var client = new HttpClient(wrappingHandler);
-        var response = await client.GetAsync("http://localhost/api/test");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/test");
+        request.SetConfiguration(new HttpConfiguration());
+        var response = await client.SendAsync(request);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObject = JsonSerializer.Deserialize<APIResponse>(responseString);
+        var responseObject = System.Text.Json.JsonSerializer.Deserialize<APIResponse>(responseString);
         Assert.IsNotNull(responseObject);
         Assert.AreEqual(404, responseObject.StatusCode);
-        Assert.AreEqual("Unable to process the request.", responseObject.Message);
+        Assert.AreEqual("Test Failed Successfully", responseObject.Message);
     }
 
     private Mock<HttpMessageHandler> GetWorkingMockHttpMessageHandler()
     {
-        var dataToReturn = new { StatusCode = HttpStatusCode.OK, Message = "Test Pass" };
-        var jsonDataToReturn = JsonSerializer.Serialize(dataToReturn);
+        var dataToReturn = new APIResponse { StatusCode = (int)HttpStatusCode.OK, Message = "Test Pass" };
         var workingMockHttpMessageHandler = new Mock<HttpMessageHandler>();
         workingMockHttpMessageHandler.Protected().Setup<Task<HttpResponseMessage>>(
             "SendAsync",
@@ -54,15 +59,14 @@ public class PathTests
             ).ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(jsonDataToReturn, Encoding.UTF8, "application/json")
+                Content = new ObjectContent<APIResponse>(dataToReturn, new System.Net.Http.Formatting.JsonMediaTypeFormatter())
             });
         return workingMockHttpMessageHandler;
     }
 
     private Mock<HttpMessageHandler> GetBrokenMockHttpMessageHandler()
     {
-        var dataToReturn = new { Status = HttpStatusCode.NotFound, Title = "Not Found", Details = "Test Failed Successfully" };
-        var jsonDataToReturn = JsonSerializer.Serialize(dataToReturn);
+        var dataToReturn = new APIResponse { StatusCode = (int)HttpStatusCode.NotFound, Message = "Test Failed Successfully" };
         var workingMockHttpMessageHandler = new Mock<HttpMessageHandler>();
         workingMockHttpMessageHandler.Protected().Setup<Task<HttpResponseMessage>>(
             "SendAsync",
@@ -71,7 +75,9 @@ public class PathTests
             ).ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.NotFound,
-                Content = new StringContent(jsonDataToReturn, Encoding.UTF8, "application/json")
+                Content = new ObjectContent<APIResponse>(
+                    dataToReturn,
+                    new System.Net.Http.Formatting.JsonMediaTypeFormatter())
             });
         return workingMockHttpMessageHandler;
     }
