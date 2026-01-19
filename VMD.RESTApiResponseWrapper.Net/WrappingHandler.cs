@@ -32,9 +32,7 @@ namespace VMD.RESTApiResponseWrapper.Net
         private static async Task<HttpResponseMessage> BuildApiResponseAsync(HttpRequestMessage request, HttpResponseMessage response)
         {
             object data;
-
-            string jsonString = await response.Content?.ReadAsStringAsync();
-            dynamic content = TryDeserializeJson(jsonString);
+            dynamic content = await ReadAndDeserializeAsync(response);
 
             if (content?.StatusCode != null)
             {
@@ -56,23 +54,45 @@ namespace VMD.RESTApiResponseWrapper.Net
             {
                 data = new APIResponse((int)response.StatusCode, ResponseMessageEnum.Success.GetDescription());
             }
+            return CreateNewResponse(response, data, request);
+        }
+
+        private static HttpResponseMessage CreateNewResponse(
+            HttpResponseMessage response,
+            object data,
+            HttpRequestMessage request)
+        {
             var newResponse = new HttpResponseMessage(response.StatusCode)
             {
                 RequestMessage = request,
                 Content = data != null
                     ? new StringContent(
-                        JsonConvert.SerializeObject(data), 
-                        Encoding.UTF8, 
+                        JsonConvert.SerializeObject(data),
+                        Encoding.UTF8,
                         "application/json")
                     : null
             };
+            newResponse = AddAllHeadersToNewResponse(response, newResponse);
+            return newResponse;
+        }
 
+        private static HttpResponseMessage AddAllHeadersToNewResponse(
+            HttpResponseMessage response, 
+            HttpResponseMessage newResponse)
+        {
             foreach (var header in response.Headers)
             {
                 newResponse.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
-
             return newResponse;
+        }
+
+        private static async Task<JObject> ReadAndDeserializeAsync(HttpResponseMessage response)
+        {
+            if (response.Content is null)
+                return null;
+            string jsonString = await response.Content?.ReadAsStringAsync();
+            return TryDeserializeJson(jsonString);
         }
 
         private static JObject TryDeserializeJson(string jsonString)
@@ -99,11 +119,9 @@ namespace VMD.RESTApiResponseWrapper.Net
             else
             {
                 string errorMessage = (string)content.Message;
-
 #if DEBUG
                 errorMessage = string.Concat(errorMessage, (string)content.ExceptionMessage, (string)content.StackTrace);
 #endif
-
                 apiError = new ApiError(errorMessage);
             }
             return new APIResponse((int)response?.StatusCode, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
