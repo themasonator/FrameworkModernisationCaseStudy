@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -22,11 +23,11 @@ namespace VMD.RESTApiResponseWrapper.Net
             else
             {
                 var response = await base.SendAsync(request, cancellationToken);
-                return BuildApiResponse(request, response);
+                return await BuildApiResponseAsync(request, response);
             }
         }
 
-        private static HttpResponseMessage BuildApiResponse(HttpRequestMessage request, HttpResponseMessage response)
+        private static async Task<HttpResponseMessage> BuildApiResponseAsync(HttpRequestMessage request, HttpResponseMessage response)
         {
             dynamic content = null;
             object data = null;
@@ -35,14 +36,8 @@ namespace VMD.RESTApiResponseWrapper.Net
 
             var code = (int)response.StatusCode;
 
-            string jsonString = response.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
-            // Check if there is content to read from the response body.
-            if (!string.IsNullOrEmpty(jsonString))
-            {
-                try { content = JsonConvert.DeserializeObject<dynamic>(jsonString); }
-                catch
-                { }
-            }
+            string jsonString = await response.Content?.ReadAsStringAsync();
+            content = TryDeserializeJson(jsonString);
 
             if (content != null && !response.IsSuccessStatusCode)
             {
@@ -106,6 +101,30 @@ namespace VMD.RESTApiResponseWrapper.Net
             }
 
             return newResponse;
+        }
+
+        private static JObject TryDeserializeJson(string jsonString)
+        {
+            if (string.IsNullOrEmpty(jsonString))
+                return null;
+            try
+            {
+                return JsonConvert.DeserializeObject<dynamic>(jsonString);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static object WrapSuccessfulResponse()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static object WrapFailedResponse()
+        {
+            throw new NotImplementedException();
         }
 
         private static bool IsSwagger(HttpRequestMessage request) 
