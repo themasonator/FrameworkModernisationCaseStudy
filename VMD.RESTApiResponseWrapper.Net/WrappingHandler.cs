@@ -109,7 +109,7 @@ namespace VMD.RESTApiResponseWrapper.Net
             }
         }
 
-        private static object WrapFailedResponse(HttpResponseMessage response, dynamic content)
+        private static APIResponse WrapFailedResponse(HttpResponseMessage response, dynamic content)
         {
             ApiError apiError;
             if (response.StatusCode == HttpStatusCode.NotFound)
