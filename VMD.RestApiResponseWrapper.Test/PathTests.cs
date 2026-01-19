@@ -21,7 +21,7 @@ public class PathTests
         var response = await client.SendAsync(request);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObject = System.Text.Json.JsonSerializer.Deserialize<APIResponse>(responseString);
+        var responseObject = JsonSerializer.Deserialize<APIResponse>(responseString);
         Assert.IsNotNull(responseObject);
         Assert.AreEqual(200, responseObject.StatusCode);
         Assert.AreEqual("Test Pass", responseObject.Message);
