@@ -20,10 +20,12 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
             {
                 // handle explicit 'known' API errors
                 var ex = context.Exception as ApiException;
-                apiError = new ApiError(ex.Message);
-                apiError.ValidationErrors = ex.Errors;
-                apiError.ReferenceErrorCode = ex.ReferenceErrorCode;
-                apiError.ReferenceDocumentLink = ex.ReferenceDocumentLink;
+                apiError = new ApiError(ex.Message)
+                {
+                    ValidationErrors = ex.Errors,
+                    ReferenceErrorCode = ex.ReferenceErrorCode,
+                    ReferenceDocumentLink = ex.ReferenceDocumentLink
+                };
                 code = ex.StatusCode;
             }
             else if (context.Exception is UnauthorizedAccessException)
@@ -42,8 +44,10 @@ namespace VMD.RESTApiResponseWrapper.Net.Filters
                 string stack = context.Exception.StackTrace;
 #endif
 
-                apiError = new ApiError(msg);
-                apiError.Details = stack;
+                apiError = new ApiError(msg)
+                {
+                    Details = stack
+                };
                 code = (int)HttpStatusCode.InternalServerError;
 
 

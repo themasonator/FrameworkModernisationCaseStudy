@@ -44,7 +44,7 @@ public class PathTests
         Assert.AreEqual("Test Failed Successfully", responseObject.Message);
     }
 
-    private Mock<HttpMessageHandler> GetWorkingMockHttpMessageHandler()
+    private static Mock<HttpMessageHandler> GetWorkingMockHttpMessageHandler()
     {
         var dataToReturn = new APIResponse { StatusCode = (int)HttpStatusCode.OK, Message = "Test Pass" };
         var json = JsonSerializer.Serialize(dataToReturn);
@@ -62,7 +62,7 @@ public class PathTests
         return workingMockHttpMessageHandler;
     }
 
-    private Mock<HttpMessageHandler> GetBrokenMockHttpMessageHandler()
+    private static Mock<HttpMessageHandler> GetBrokenMockHttpMessageHandler()
     {
         var dataToReturn = new APIResponse { StatusCode = (int)HttpStatusCode.NotFound, Message = "Test Failed Successfully" };
         var json = JsonSerializer.Serialize(dataToReturn);

@@ -35,7 +35,7 @@ namespace VMD.RESTApiResponseWrapper.Net
 
             var code = (int)response.StatusCode;
 
-            string jsonString = response.Content != null ? response.Content.ReadAsStringAsync().GetAwaiter().GetResult() : null;
+            string jsonString = response.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
             // Check if there is content to read from the response body.
             if (!string.IsNullOrEmpty(jsonString))
             {
@@ -108,9 +108,7 @@ namespace VMD.RESTApiResponseWrapper.Net
             return newResponse;
         }
 
-        private bool IsSwagger(HttpRequestMessage request)
-        {
-            return request.RequestUri.PathAndQuery.StartsWith("/swagger");
-        }
+        private static bool IsSwagger(HttpRequestMessage request) 
+            => request.RequestUri.PathAndQuery.StartsWith("/swagger");
     }
 }

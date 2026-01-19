@@ -27,9 +27,9 @@ namespace VMD.RESTApiResponseWrapper.Net.Wrappers
             if (modelState != null && modelState.Any(m => m.Value.Errors.Count > 0))
             {
                 ExceptionMessage = "Please correct the specified validation errors and try again.";
-                ValidationErrors = modelState.Keys
-                .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))
-                .ToList();
+                ValidationErrors = 
+                    [.. modelState.Keys.SelectMany(key => 
+                        modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))];
 
             }
         }

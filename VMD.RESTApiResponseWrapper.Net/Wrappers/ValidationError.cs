@@ -4,17 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace VMD.RESTApiResponseWrapper.Net.Wrappers
 {
-    public class ValidationError
+    public class ValidationError(string field, string message)
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Field { get; }
+        public string Field { get; } = field != string.Empty ? field : null;
 
-        public string Message { get; }
-
-        public ValidationError(string field, string message)
-        {
-            Field = field != string.Empty ? field : null;
-            Message = message;
-        }
+        public string Message { get; } = message;
     }
 }

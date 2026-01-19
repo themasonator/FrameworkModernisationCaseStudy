@@ -23,7 +23,7 @@ namespace VMD.RestApiResponseWrapper.Net.Test
         {
             var errors = new List<ValidationError>
             {
-                new ValidationError("Name", "Required")
+                new("Name", "Required")
             };
             var ex = new ApiException("Custom error", 400, errors, "ERR001", "https://docs.link");
 
