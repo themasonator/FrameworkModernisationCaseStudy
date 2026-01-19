@@ -1,6 +1,6 @@
 # .NET Framework Modernisation Case Study
 A REST global exception handler and response wrapper for Web API originally written in Full .NET Framework, now modernised to .NET 8.0.
-THe original, by **Vincent Michael Durano** on which it is based, can be found [here](https://github.com/proudmonkey/RESTApiResponseWrapper.Net).
+The original, by **Vincent Michael Durano** on which it is based, can be found [here](https://github.com/proudmonkey/RESTApiResponseWrapper.Net).
 
 This served as a case study for modernisation of .NET framework code to .NET, a task likely to become more common as .NET framework's support recedes.
 In addition it emulated a common situation of documentation no longer being available as the previous repo's documentation is now offline.
