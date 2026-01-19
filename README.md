@@ -6,10 +6,10 @@ This served as a case study for modernisation of .NET framework code to .NET, a 
 In addition it emulated a common situation of documentation no longer being available as the previous repo's documentation is now offline.
 It also lacked a test suite, so two test cases were added to imitate a proper test suite, which would need to be created for a modernisation project, and would have full coverage and cover all boundary values, needed in a full framework modernisation project.
 
-## Prerequisite
+## Prerequisites
 
-ASP.NET core 8+
-Install Newtonsoft.Json package
+* ASP.NET core 8+
+* Newtonsoft.Json
 
 ## Installing
 
