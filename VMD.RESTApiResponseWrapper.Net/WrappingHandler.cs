@@ -3,12 +3,14 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VMD.RESTApiResponseWrapper.Net.Enums;
 using VMD.RESTApiResponseWrapper.Net.Extensions;
 using VMD.RESTApiResponseWrapper.Net.Wrappers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace VMD.RESTApiResponseWrapper.Net
 {
@@ -29,60 +31,30 @@ namespace VMD.RESTApiResponseWrapper.Net
 
         private static async Task<HttpResponseMessage> BuildApiResponseAsync(HttpRequestMessage request, HttpResponseMessage response)
         {
-            dynamic content = null;
-            object data = null;
-            string errorMessage = null;
-            ApiError apiError = null;
-
-            var code = (int)response.StatusCode;
+            object data;
 
             string jsonString = await response.Content?.ReadAsStringAsync();
-            content = TryDeserializeJson(jsonString);
+            dynamic content = TryDeserializeJson(jsonString);
 
-            if (content != null && !response.IsSuccessStatusCode)
+            if (content?.StatusCode != null)
             {
-                if (content.StatusCode != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    data = content;
+                    response.StatusCode = Enum.Parse(typeof(HttpStatusCode), content.StatusCode.ToString());
                 }
-                else 
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    apiError = new ApiError("The specified URI does not exist. Please verify and try again.");
-                    else if (response.StatusCode == HttpStatusCode.NoContent)
-                        apiError = new ApiError("The specified URI does not contain any content.");
-                    else
-                    {
-                        errorMessage = (string)content.Message;
-
-    #if DEBUG
-                        errorMessage = string.Concat(errorMessage, (string)content.ExceptionMessage, (string)content.StackTrace);
-    #endif
-
-                        apiError = new ApiError(errorMessage);
-                    }
-                    data = new APIResponse((int)code, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
-                }
+                data = content;
+            }
+            else if (content?.swagger != null)
+            {
+                data = content;
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                data = WrapFailedResponse(response, content);
             }
             else
             {
-                if (content != null)
-                {
-                    if (content.StatusCode != null)
-                    {
-                        response.StatusCode = Enum.Parse(typeof(HttpStatusCode), content.StatusCode.ToString());
-                        data = content;
-                    }
-                    else if (content.swagger != null)
-                        data = content;
-                    else
-                        data = new APIResponse(code, ResponseMessageEnum.Success.GetDescription(), content);
-                }
-                else
-                {
-                    if (response.IsSuccessStatusCode)
-                        data = new APIResponse((int)response.StatusCode, ResponseMessageEnum.Success.GetDescription());
-                }
+                data = new APIResponse((int)response.StatusCode, ResponseMessageEnum.Success.GetDescription());
             }
             var newResponse = new HttpResponseMessage(response.StatusCode)
             {
@@ -117,14 +89,24 @@ namespace VMD.RESTApiResponseWrapper.Net
             }
         }
 
-        private static object WrapSuccessfulResponse()
+        private static object WrapFailedResponse(HttpResponseMessage response, dynamic content)
         {
-            throw new NotImplementedException();
-        }
+            ApiError apiError;
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                apiError = new ApiError("The specified URI does not exist. Please verify and try again.");
+            else if (response.StatusCode == HttpStatusCode.NoContent)
+                apiError = new ApiError("The specified URI does not contain any content.");
+            else
+            {
+                string errorMessage = (string)content.Message;
 
-        private static object WrapFailedResponse()
-        {
-            throw new NotImplementedException();
+#if DEBUG
+                errorMessage = string.Concat(errorMessage, (string)content.ExceptionMessage, (string)content.StackTrace);
+#endif
+
+                apiError = new ApiError(errorMessage);
+            }
+            return new APIResponse((int)response?.StatusCode, ResponseMessageEnum.Failure.GetDescription(), null, apiError);
         }
 
         private static bool IsSwagger(HttpRequestMessage request) 
