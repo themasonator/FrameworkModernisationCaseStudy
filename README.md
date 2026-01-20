@@ -1,36 +1,55 @@
 # .NET Framework Modernisation Case Study
-A REST global exception handler and response wrapper originally written in Full .NET Framework, now modernised to .NET 8.0.
+A REST global exception handler and response wrapper for clients consuming an API, originally written in Full .NET Framework, now modernised to .NET 8.0. 
 The original, by **Vincent Maverick Durano**, on which it is based, can be found [here](https://github.com/proudmonkey/RESTApiResponseWrapper.Net).
-
+ 
 This served as an exercise in the modernisation of .NET framework code to .NET, a task likely to become more common as .NET framework's support recedes.
 It emulated a common situation of documentation no longer being available, as the previous repo's documentation is now offline.
 It also lacked a test suite, so two test cases were added to imitate a proper test suite, which would need to be created for a modernisation project, and would have full coverage and cover all boundary values, needed in a full framework modernisation project.
 
+## Caveat
+
+In its current state this is only suitable for a client-side consumer, where the previous version could cover a server-side API as well. This is because DelegatingHandler (which WrappingHandler inherits from) only interacts with outgoing requests via HttpClient in ASP.NET core and does not take incoming requests. A rewrite toward Middleware, using HttpContext rather than HttpResponseMessage and HttpRequestMessage would be needed to make this work on the server side rather than the client side. Both would be needed to cover the original app's two possible use cases as Middleware relies on an incoming network listener and thus can't be used on the client side.
+
 ## Prerequisites
 
-* ASP.NET core 8+
-* Newtonsoft.Json
+* Microsoft.Extensions.Hosting
+* Microsoft.Extensions.Http
 
 ## Installing
+1) Add the following usings within Program.cs
+```
+* using Microsoft.Extensions.DependencyInjection;
+* using Microsoft.Extensions.Hosting;
+* using VMD.RESTApiResponseWrapper.Net;
+```
 
-1) Declare the following namespace within Program.cs
+2) Register the following within Program.cs in your host via dependency injection. Use your chosen string key instead of MyExampleAPI, and your API instead of httpbin:
 ```
-using VMD.RESTApiResponseWrapper.Net;
-using VMD.RESTApiResponseWrapper.Net.Filters;
-```
-
-2) Register the following within Program.cs
-```
-builder.Services
-    .AddControllers(options =>
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
     {
-        options.Filters.Add<ApiExceptionFilter>();
+        services.AddTransient<WrappingHandler>();
+
+        services.AddHttpClient("MyExampleAPI", client =>
+        {
+            client.BaseAddress = new Uri("https://httpbin.org/");
+        })
+        .AddHttpMessageHandler<WrappingHandler>();
     })
-    .AddNewtonsoftJson();
-builder.Services.AddTransient<WrappingHandler>();
-app.MapControllers();
+    .Build();
+
 ```
-4) Done.
+
+3) You can now create the HttpClient with the string key specified above via the Factory pattern
+
+```
+var clientFactory = host.Services.GetRequiredService<IHttpClientFactory>();
+var client = clientFactory.CreateClient("MyExampleAPI");
+
+var result = await client.GetStringAsync("get");
+Console.WriteLine(result);
+Console.ReadLine();
+```
 
 ## Sample Output 
 
