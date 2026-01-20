@@ -8,7 +8,7 @@ It also lacked a test suite, so two test cases were added to imitate a proper te
 
 ## Caveat
 
-In its current state this is only suitable for a client-side consumer, where the previous version could cover a server-side API as well. This is because DelegatingHandler (which WrappingHandler inherits from) only interacts with outgoing requests via HttpClient in ASP.NET core and does not take incoming requests. A rewrite toward Middleware, using HttpContext rather than HttpResponseMessage and HttpRequestMessage would be needed to make this work on the server side rather than the client side. Both would be needed to cover the original app's two possible use cases as Middleware relies on an incoming network listener and thus can't be used on the client side.
+In its current state this is only suitable for a client-side consumer, where the previous version could cover a server-side API as well. This is because DelegatingHandler (which WrappingHandler inherits from) only interacts with outgoing requests in ASP.NET core and does not take incoming requests, unlike in ASP.NET. A rewrite toward ASP.NET core's Middleware, using HttpContext rather than HttpResponseMessage and HttpRequestMessage would be needed to make this work on the server side rather than the client side. Both would be needed to cover the original app's two possible use cases as Middleware relies on an incoming network listener and thus can't be used on the client side.
 
 ## Prerequisites
 
