@@ -14,12 +14,13 @@ It also lacked a test suite, so two test cases were added to imitate a proper te
 ## Installing
 
 1) Declare the following namespace within Program.cs
-
+```
 using VMD.RESTApiResponseWrapper.Net;
 using VMD.RESTApiResponseWrapper.Net.Filters;
+```
 
 2) Register the following within Program.cs
-
+```
 builder.Services
     .AddControllers(options =>
     {
@@ -28,8 +29,8 @@ builder.Services
     .AddNewtonsoftJson();
 builder.Services.AddTransient<WrappingHandler>();
 app.MapControllers();
-
-3) Done.
+```
+4) Done.
 
 ## Sample Output 
 
