@@ -1,6 +1,6 @@
-# VMD.RESTApiResponseWrapper.Net
+# TheMasonator.RESTApiResponseWrapper.Net
 
-The VMD.RESTApiResponseWrapper.Net is a global exception handler and response wrapper for ASP.NET core Web APIs. It uses a ExceptionFilterAttribute to capture exceptions and uses a DelegatingHandler to capture HTTP response to build a consistent response object for both successful and error requests.
+The TheMasonator.RESTApiResponseWrapper.Net is a global exception handler and response wrapper for ASP.NET core Web APIs. It uses a ExceptionFilterAttribute to capture exceptions and uses a DelegatingHandler to capture HTTP response to build a consistent response object for both successful and error requests.
 
 ## Prerequisite
 
@@ -10,8 +10,8 @@ Install Newtonsoft.Json package
 
 1) Declare the following namespace within WebApiConfig.cs
 
-using VMD.RESTApiResponseWrapper.Net;
-using VMD.RESTApiResponseWrapper.Net.Filters;
+using TheMasonator.RESTApiResponseWrapper.Net;
+using TheMasonator.RESTApiResponseWrapper.Net.Filters;
 
 2) Register the following within WebApiConfig.cs
 

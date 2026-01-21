@@ -1,6 +1,6 @@
-﻿using VMD.RESTApiResponseWrapper.Net.Wrappers;
+﻿using TheMasonator.RESTApiResponseWrapper.Net.Wrappers;
 
-namespace VMD.RestApiResponseWrapper.Net.Test
+namespace TheMasonator.RestApiResponseWrapper.Net.Test
 {
     [TestClass]
     public sealed class ModelObjectTests

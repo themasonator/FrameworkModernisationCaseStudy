@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Net;
-using VMD.RESTApiResponseWrapper.Net.Enums;
-using VMD.RESTApiResponseWrapper.Net.Extensions;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
+using TheMasonator.RESTApiResponseWrapper.Net.Enums;
+using TheMasonator.RESTApiResponseWrapper.Net.Extensions;
+using TheMasonator.RESTApiResponseWrapper.Net.Wrappers;
 
-namespace VMD.RESTApiResponseWrapper.Net.Filters
+namespace TheMasonator.RESTApiResponseWrapper.Net.Filters
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {

@@ -3,9 +3,9 @@ using Moq.Protected;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
+using TheMasonator.RESTApiResponseWrapper.Net.Wrappers;
 
-namespace VMD.RESTApiResponseWrapper.Net.Test;
+namespace TheMasonator.RESTApiResponseWrapper.Net.Test;
 
 [TestClass]
 public class PathTests

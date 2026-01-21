@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VMD.RESTApiResponseWrapper.Net\VMD.RESTApiResponseWrapper.Net.csproj" />
+    <ProjectReference Include="..\VMD.RESTApiResponseWrapper.Net\TheMasonator.RESTApiResponseWrapper.Net.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace VMD.RESTApiResponseWrapper.Net.Wrappers
+namespace TheMasonator.RESTApiResponseWrapper.Net.Wrappers
 {
     public class ValidationError(string field, string message)
     {

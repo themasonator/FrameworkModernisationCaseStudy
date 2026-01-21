@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace VMD.RESTApiResponseWrapper.Net.Wrappers
+namespace TheMasonator.RESTApiResponseWrapper.Net.Wrappers
 {
     [DataContract]
     [KnownTypeAttribute(typeof(APIResponse))]

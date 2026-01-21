@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace VMD.RESTApiResponseWrapper.Net.Extensions
+namespace TheMasonator.RESTApiResponseWrapper.Net.Extensions
 {
     public static class StringEnumExtension
     {

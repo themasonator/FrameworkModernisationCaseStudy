@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace VMD.RESTApiResponseWrapper.Net.Enums
+namespace TheMasonator.RESTApiResponseWrapper.Net.Enums
 {
     public enum ResponseMessageEnum
     {

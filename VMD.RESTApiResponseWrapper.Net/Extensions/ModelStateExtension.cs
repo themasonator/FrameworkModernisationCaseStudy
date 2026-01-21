@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
+using TheMasonator.RESTApiResponseWrapper.Net.Wrappers;
 
-namespace VMD.RESTApiResponseWrapper.Net.Extensions
+namespace TheMasonator.RESTApiResponseWrapper.Net.Extensions
 {
     public static class ModelStateExtension
     {

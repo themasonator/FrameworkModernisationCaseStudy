@@ -7,12 +7,12 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VMD.RESTApiResponseWrapper.Net.Enums;
-using VMD.RESTApiResponseWrapper.Net.Extensions;
-using VMD.RESTApiResponseWrapper.Net.Wrappers;
+using TheMasonator.RESTApiResponseWrapper.Net.Enums;
+using TheMasonator.RESTApiResponseWrapper.Net.Extensions;
+using TheMasonator.RESTApiResponseWrapper.Net.Wrappers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace VMD.RESTApiResponseWrapper.Net
+namespace TheMasonator.RESTApiResponseWrapper.Net
 {
     public class WrappingHandler : DelegatingHandler
     {

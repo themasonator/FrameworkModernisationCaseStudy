@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VMD.RESTApiResponseWrapper.Net.Wrappers
+namespace TheMasonator.RESTApiResponseWrapper.Net.Wrappers
 {
     [Serializable]
     public class ApiException : System.Exception

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VMD.RESTApiResponseWrapper.Net.Wrappers
+namespace TheMasonator.RESTApiResponseWrapper.Net.Wrappers
 {
     public class ApiError
     {
